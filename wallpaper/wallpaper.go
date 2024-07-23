@@ -1,6 +1,8 @@
 package wallpaper
 
 import (
+	"encoding/json"
+	"os"
 	"syscall"
 	"unsafe"
 )
@@ -34,4 +36,47 @@ func GetWallpaperPath() (string, error) {
 	// Convert the buffer from UTF-16 to a Go string
 	wallpaperPath := syscall.UTF16ToString(buffer)
 	return wallpaperPath, nil
+}
+
+type Folder struct {
+	Name  string   `json:"name"`
+	Files []string `json:"files"`
+}
+
+func GetLocalWallpapers(rootPath string) []Folder {
+	var folders []Folder
+	files, _ := os.ReadDir(rootPath)
+
+	for _, file := range files {
+		if file.IsDir() {
+			subFolders := GetLocalWallpapers(rootPath + "\\" + file.Name())
+			folders = append(folders, subFolders...)
+		} else {
+			found := false
+			for i := range folders {
+				if folders[i].Name == rootPath {
+					folders[i].Files = append(folders[i].Files, file.Name())
+					found = true
+					break
+				}
+			}
+			if !found {
+				folders = append(folders, Folder{
+					Name:  rootPath,
+					Files: []string{file.Name()},
+				})
+			}
+		}
+	}
+
+	return folders
+}
+
+func GetLocalWallpapersJSON(rootPath string) ([]byte, error) {
+	folders := GetLocalWallpapers(rootPath)
+	jsonData, errJSON := json.MarshalIndent(folders, "", " ")
+	if errJSON != nil {
+		return make([]byte, 0), errJSON
+	}
+	return jsonData, nil
 }

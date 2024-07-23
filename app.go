@@ -32,6 +32,15 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
+func (a *App) GetLocalWallpapersJSON(rootPath string) string {
+	foldersJSON, errJSON := wallpaper.GetLocalWallpapersJSON(rootPath)
+	if errJSON != nil {
+		return ""
+	}
+
+	return string(foldersJSON)
+}
+
 func (a *App) GetWallpaperPath() string {
 	wallpaperPath, _ := wallpaper.GetWallpaperPath()
 	return wallpaperPath

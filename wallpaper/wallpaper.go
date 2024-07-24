@@ -52,19 +52,13 @@ func GetLocalWallpapers(rootPath string) []Folder {
 			subFolders := GetLocalWallpapers(rootPath + "\\" + file.Name())
 			folders = append(folders, subFolders...)
 		} else {
-			found := false
-			for i := range folders {
-				if folders[i].Name == rootPath {
-					folders[i].Files = append(folders[i].Files, file.Name())
-					found = true
-					break
-				}
-			}
-			if !found {
+			if cap(folders) == 0 {
 				folders = append(folders, Folder{
 					Name:  rootPath,
 					Files: []string{file.Name()},
 				})
+			} else {
+				folders[0].Files = append(folders[0].Files, file.Name())
 			}
 		}
 	}

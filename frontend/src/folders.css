@@ -1,0 +1,27 @@
+#folders {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+#folders .listName {
+    white-space: nowrap;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#folders ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 0 0 20px 20px;
+}
+
+#folders ul li {
+    max-width: 100%;
+}
+
+#folders ul img {
+    max-width: 30%;
+}

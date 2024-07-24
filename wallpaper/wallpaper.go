@@ -9,6 +9,7 @@ import (
 
 const (
 	SPI_GETDESKWALLPAPER = 0x0073
+	SPI_SETDESKWALLPAPER = 0x0014
 	MAX_PATH             = 260
 )
 
@@ -36,6 +37,33 @@ func GetWallpaperPath() (string, error) {
 	// Convert the buffer from UTF-16 to a Go string
 	wallpaperPath := syscall.UTF16ToString(buffer)
 	return wallpaperPath, nil
+}
+
+func SetWallpaper(imagePath string) error {
+	// Load user32.dll
+	user32 := syscall.NewLazyDLL("user32.dll")
+	// Get the SystemParametersInfoW function
+	procSystemParametersInfoW := user32.NewProc("SystemParametersInfoW")
+
+	// Convert the image path to a UTF-16 encoded string
+	imagePathUTF16, err := syscall.UTF16PtrFromString(imagePath)
+	if err != nil {
+		return err
+	}
+
+	// Call SystemParametersInfoW to set the wallpaper
+	ret, _, err := procSystemParametersInfoW.Call(
+		SPI_SETDESKWALLPAPER,
+		0,
+		uintptr(unsafe.Pointer(imagePathUTF16)),
+		0,
+	)
+
+	if ret == 0 {
+		return err
+	}
+
+	return nil
 }
 
 type Folder struct {

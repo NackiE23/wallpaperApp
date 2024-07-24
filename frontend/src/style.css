@@ -34,3 +34,7 @@ ul {
 li {
     word-wrap: break-word;
 }
+
+#wallpaper img {
+    max-width: 80%;
+}

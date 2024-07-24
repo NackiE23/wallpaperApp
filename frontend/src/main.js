@@ -2,7 +2,7 @@ import './style.css';
 import './folders.css';
 
 import logo from './assets/images/logo-universal.png';
-import {GetLocalWallpapersJSON, GetWallpaperBase64, GetWallpaperPath, Greet} from '../wailsjs/go/main/App';
+import {GetLocalWallpapersJSON, GetWallpaperBase64, GetWallpaperPath, CheckFileExists} from '../wailsjs/go/main/App';
 
 
 async function loadWallpapers() {
@@ -63,31 +63,22 @@ async function loadWallpapers() {
 
 document.addEventListener('DOMContentLoaded', loadWallpapers);
 
-window.getwall = function() {
-    GetWallpaperPath().then((result) => {
+window.getwall = async function() {
+    try {
+        const result = await GetWallpaperPath();
         document.getElementById("wallppaperPath").innerText = result;
-    })
+        
+        const fileExists = await CheckFileExists(result);
+        if (fileExists) {
+            const base64Image = await GetWallpaperBase64(result);
+            const img = document.createElement("img");
+            img.src = 'data:image/jpeg;base64,' + base64Image;
+            let wallpaperEl = document.getElementById("wallpaper");
+            wallpaperEl.innerHTML = "";
+            wallpaperEl.append(img);
+        }
+    } catch (error) {
+        console.error("Error fetching wallpaper:", error);
+    }
 }
 
-// Setup the greet function
-window.greet = function () {
-    // Get name
-    let name = nameElement.value;
-
-    // Check if the input is empty
-    if (name === "") return;
-
-    // Call App.Greet(name)
-    try {
-        Greet(name)
-            .then((result) => {
-                // Update result with data back from App.Greet()
-                resultElement.innerText = result;
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    } catch (err) {
-        console.error(err);
-    }
-};

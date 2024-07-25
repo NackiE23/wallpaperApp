@@ -2,7 +2,18 @@ import './style.css';
 import './folders.css';
 
 import logo from './assets/images/logo-universal.png';
-import {GetLocalWallpapersJSON, GetWallpaperBase64, GetWallpaperPath, CheckFileExists} from '../wailsjs/go/main/App';
+import {GetLocalWallpapersJSON, GetWallpaperBase64, GetWallpaperPath, CheckFileExists, GetFileServerInfo} from '../wailsjs/go/main/App';
+
+var fileServerHost, fileServerPath;
+
+GetFileServerInfo().then((res) => {
+    fileServerHost = res.host;
+    fileServerPath = res.path;
+    console.log("fileServerHost: ", fileServerHost)
+    console.log("fileServerPath: ", fileServerPath)
+    document.getElementById("fileServerHost").innerText = fileServerHost;
+    document.getElementById("fileServerPath").innerText = fileServerPath;
+});
 
 
 async function loadWallpapers() {
@@ -35,13 +46,19 @@ async function loadWallpapers() {
 
         document.querySelectorAll("#folders ul li").forEach(li => {
             li.addEventListener("click", (e) => {
-                let imagePath = e.target.dataset.folder + "\\" + e.target.innerText;
-                console.log(imagePath);
-                GetWallpaperBase64(imagePath).then((base64Image) => {
+                if (!fileServerHost && !fileServerPath) {
+                    let imagePath = e.target.dataset.folder + "\\" + e.target.innerText;
+                    console.log(imagePath);
+                    GetWallpaperBase64(imagePath).then((base64Image) => {
+                        const img = document.createElement("img");
+                        img.src = 'data:image/jpeg;base64,' + base64Image;
+                        e.target.replaceWith(img);
+                    });
+                } else {
                     const img = document.createElement("img");
-                    img.src = 'data:image/jpeg;base64,' + base64Image;
+                    img.src = `${fileServerHost}${e.target.dataset.folder.replace(fileServerPath, "").replaceAll("\\", "/")}/${e.target.innerText}`;
                     e.target.replaceWith(img);
-                });
+                }
             });            
         });
 

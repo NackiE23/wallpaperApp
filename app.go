@@ -9,12 +9,22 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	FileServerPath string
+	FileServerHost string
+	ctx            context.Context
+}
+
+type FileServerInfo struct {
+	Path string `json:"path"`
+	Host string `json:"host"`
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		FileServerPath: "D:\\обои",
+		FileServerHost: "http://localhost:8080",
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -24,6 +34,13 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) shutdown(ctx context.Context) {
+}
+
+func (a *App) GetFileServerInfo() FileServerInfo {
+	return FileServerInfo{
+		Path: a.FileServerPath,
+		Host: a.FileServerHost,
+	}
 }
 
 func (a *App) GetLocalWallpapersJSON(rootPath string) string {

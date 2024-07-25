@@ -6,6 +6,10 @@ export function CheckFileExists(arg1) {
   return window['go']['main']['App']['CheckFileExists'](arg1);
 }
 
+export function GetFileServerInfo() {
+  return window['go']['main']['App']['GetFileServerInfo']();
+}
+
 export function GetLocalWallpapersJSON(arg1) {
   return window['go']['main']['App']['GetLocalWallpapersJSON'](arg1);
 }

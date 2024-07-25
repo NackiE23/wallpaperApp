@@ -6,9 +6,14 @@
 }
 
 #folders .listName {
+    display: block;
     white-space: nowrap;
     width: 100%;
     margin-bottom: 20px;
+}
+
+#folders .listName .loadAll {
+    cursor: pointer;
 }
 
 #folders ul {

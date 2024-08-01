@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GetLocalWallpapersJSON, GetWallpaperBase64, GetWallpaperPath, CheckFileExists, GetFileServerInfo } from '../../wailsjs/go/main/App';
 import { Folder } from '../types';
+import './home.css';
 
 
 const Home: React.FC = () => {
@@ -84,11 +85,11 @@ const Home: React.FC = () => {
                         <span className="listName">
                             {folder.name} ({folder.files.length}) <span className="loadAll" onClick={(e) => handleLoadAll(e)}>Load All Images</span>
                         </span>
-                        <ul>
+                        <div className='folderList'>
                             {folder.files.map(file => (
                                 <li key={file} onClick={(e) => handleLoadWallpaper(e, folder.name, file)}>{file}</li>
                             ))}
-                        </ul>
+                        </div>
                     </div>
                 ))}
             </div>

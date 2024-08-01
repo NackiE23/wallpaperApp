@@ -16,17 +16,18 @@
     cursor: pointer;
 }
 
-#folders ul {
+#folders .folderList {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
     padding: 0 0 20px 20px;
 }
 
-#folders ul li {
+#folders .folderList li {
     max-width: 100%;
+    word-wrap: anywhere;
 }
 
-#folders ul img {
+#folders .folderList img {
     max-width: 30%;
 }

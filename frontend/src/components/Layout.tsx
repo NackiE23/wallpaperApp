@@ -8,8 +8,7 @@ const Layout: React.FC = () => {
         <div className="layout">
             <nav className='sidebar'>
                 <Link to="/">Home</Link>
-                <Link to="/about">About</Link>
-                <Link to="/contact">Contact</Link>
+                <Link to="/imageinfo?image=AkameGaKill/707366.jpg">Test Image Info</Link>
             </nav>
             <main className='content'>
                 <Outlet />

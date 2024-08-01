@@ -85,11 +85,11 @@ const Home: React.FC = () => {
                         <span className="listName">
                             {folder.name} ({folder.files.length}) <span className="loadAll" onClick={(e) => handleLoadAll(e)}>Load All Images</span>
                         </span>
-                        <div className='folderList'>
+                        <ul className='folderList'>
                             {folder.files.map(file => (
                                 <li key={file} onClick={(e) => handleLoadWallpaper(e, folder.name, file)}>{file}</li>
                             ))}
-                        </div>
+                        </ul>
                     </div>
                 ))}
             </div>

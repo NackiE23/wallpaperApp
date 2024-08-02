@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GetLocalWallpapersJSON, GetWallpaperBase64, GetWallpaperPath, CheckFileExists, GetFileServerInfo } from '../../wailsjs/go/main/App';
 import { Folder } from '../types';
 import './home.css';
+import { useNavigate } from 'react-router-dom';
 
 
 const Home: React.FC = () => {
@@ -10,18 +11,28 @@ const Home: React.FC = () => {
     const [folders, setFolders] = useState<Folder[]>([]);
     const [wallpaperPath, setWallpaperPath] = useState<string>('');
     const [wallpaper, setWallpaper] = useState<string>('');
+    const navigate = useNavigate();
 
     useEffect(() => {
-        GetFileServerInfo().then((res) => {
-            setFileServerHost(res.host);
-            setFileServerPath(res.path);
-        });
-        loadWallpapers();
+        GetFileServerInfo()
+            .then((res) => {
+                setFileServerHost(res.host);
+                setFileServerPath(res.path);
+            })
+            .catch((error) => {
+                console.error("Error fetching file server info:", error);
+            });
     }, []);
+
+    useEffect(() => {
+        if (fileServerPath) {
+            loadWallpapers();
+        }
+    }, [fileServerPath]);
 
     const loadWallpapers = async () => {
         try {
-            const foldersJSON = await GetLocalWallpapersJSON("D:\\обои");
+            const foldersJSON = await GetLocalWallpapersJSON(fileServerPath);
             const folders: Folder[] = JSON.parse(foldersJSON);
             setFolders(folders);
         } catch (error) {
@@ -44,6 +55,10 @@ const Home: React.FC = () => {
         const img = document.createElement('img');
         img.src = imgSrc;
         li.replaceWith(img);
+
+        img.addEventListener('click', () => {
+            navigate(`/imageinfo?image=${encodeURIComponent(imgSrc.replace(fileServerHost, ''))}`);
+        });
     };
 
     const handleLoadAll = async (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
